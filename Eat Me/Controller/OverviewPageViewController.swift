@@ -22,25 +22,26 @@ class OverviewPageViewController: UIPageViewController, UIPageViewControllerData
             // Set the PageViewController nav bar to the same as OverviewViewController
             //            self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Montserrat-Regular", size: 30)!]
             self.navigationItem.title = overviewVC.navigationItem.title
+            overviewVC.date = Date()
+
             self.navigationItem.leftBarButtonItems = overviewVC.navigationItem.leftBarButtonItems
-            self.navigationItem.rightBarButtonItems = overviewVC.navigationItem.rightBarButtonItems
+            self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))]
             
             setViewControllers([overviewVC], direction: .forward, animated: true, completion: nil)
-            
-            // Set the inital view controller date property
-            let initalVC = viewControllers?.first as! OverviewViewController
-            initalVC.date = Date()
-            
         }
+    }
+    
+    @objc func addTapped() {
+        
+        guard let popup = storyboard?.instantiateViewController(withIdentifier: "PopupVCNav") as? UINavigationController else { return }
+        
+        present(popup, animated: true)
     }
     
     private func overviewViewController(for date: Date) -> OverviewViewController? {
         // Return a new instance of OverviewViewController and set the date property.
         
         guard let overviewPage = storyboard?.instantiateViewController(withIdentifier: "OverviewVC") as? OverviewViewController else { return nil }
-        
-        navigationItem.leftBarButtonItems = overviewPage.navigationItem.leftBarButtonItems
-        navigationItem.rightBarButtonItems = overviewPage.navigationItem.rightBarButtonItems
         
         overviewPage.configureWith(date: date)
         
@@ -49,27 +50,29 @@ class OverviewPageViewController: UIPageViewController, UIPageViewControllerData
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        guard let today = (viewController as! OverviewViewController).date else { return nil }
-        
+        guard let selectedDate = (viewController as! OverviewViewController).date else { return nil }
+
         // Yesterday's date at time: 00:00
-        guard var yesterday = calendar.date(byAdding: .day, value: -1, to: today) else { return nil }
-        yesterday = calendar.startOfDay(for: yesterday)
-        yesterday = calendar.date(byAdding: .hour, value: 1, to: yesterday) ?? yesterday
-        
-        return overviewViewController(for: yesterday)
+        guard var previousDate = calendar.date(byAdding: .day, value: -1, to: selectedDate) else { return nil }
+        previousDate = calendar.startOfDay(for: previousDate)
+        previousDate = calendar.date(byAdding: .hour, value: 1, to: previousDate) ?? previousDate
+        print("BEFORE Selected date ", selectedDate, "previousDate ", previousDate)
+
+        return overviewViewController(for: Date())
         
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
-        guard let today = (viewController as! OverviewViewController).date else { return nil }
+        guard let selectedDate = (viewController as! OverviewViewController).date else { return nil }
         
         // Tomorrow's date at time: 00:00
-        guard var tomorrow = calendar.date(byAdding: .day, value: 1, to: today) else { return nil }
-        tomorrow = calendar.startOfDay(for: tomorrow)
-        tomorrow = calendar.date(byAdding: .hour, value: 1, to: tomorrow) ?? tomorrow
+        guard var futureDate = calendar.date(byAdding: .day, value: 1, to: selectedDate) else { return nil }
+        futureDate = calendar.startOfDay(for: futureDate)
+        futureDate = calendar.date(byAdding: .hour, value: 1, to: futureDate) ?? futureDate
+        print("AFTER Selected date ", selectedDate, "futureDate ", futureDate)
         
-        return overviewViewController(for: tomorrow)
+        return overviewViewController(for: futureDate)
         
     }
     
