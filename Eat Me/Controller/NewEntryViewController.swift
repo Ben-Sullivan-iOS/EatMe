@@ -60,37 +60,8 @@ class NewEntryViewController: UITableViewController {
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
-        switch mealPicker.selectedSegmentIndex {
-            
-        case 0:
-            
-            let newBreakfastFood = Food()
-                
-            addAndSaveNewEntry(newFood: newBreakfastFood, meal: .breakfast)
-            
-        case 1:
-            
-            let newLunchFood = Food()
-            
-            addAndSaveNewEntry(newFood: newLunchFood, meal: .lunch)
-            
-        case 2:
-            
-            let newDinnerFood = Food()
-            
-            addAndSaveNewEntry(newFood: newDinnerFood, meal: .dinner)
-            
-        case 3:
-            
-            let newOtherFood = Food()
-            
-            addAndSaveNewEntry(newFood: newOtherFood, meal: .other)
-            
-        default:
-            
-            self.dismiss(animated: true, completion: nil)
-            
-        }
+        let food = Food()
+        addAndSaveNewEntry(newFood: food, meal: Food.Meal(rawValue: mealPicker.selectedSegmentIndex) ?? .other)
         
         let transition: CATransition = CATransition()
         transition.duration = 0.5
