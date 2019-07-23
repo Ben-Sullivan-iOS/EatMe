@@ -11,11 +11,11 @@ import UIKit
 class PopUpNewEntryViewController: UIViewController {
 
     @IBOutlet weak var popUpView: UIView!
+    @IBOutlet weak var enterManuallyButton: UIButton!
     
     var date: Date?
-    weak var delegate: NewEntryDelegate?
     
-    @IBOutlet weak var enterManuallyButton: UIButton!
+    weak var delegate: NewEntryDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
