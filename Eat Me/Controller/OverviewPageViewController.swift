@@ -32,10 +32,16 @@ class OverviewPageViewController: UIPageViewController, UIPageViewControllerData
     }
     
     @objc func addTapped() {
-        
-        guard let popup = storyboard?.instantiateViewController(withIdentifier: "PopupVCNav") as? UINavigationController else { return }
-        
-        present(popup, animated: true)
+        guard
+            let popupNav = storyboard?.instantiateViewController(withIdentifier: "PopupVCNav") as? UINavigationController,
+            let popupVC = popupNav.viewControllers.first as? PopUpNewEntryViewController,
+            let vc = viewControllers?[0] as? OverviewViewController
+            else {
+                return
+        }
+        popupVC.delegate = vc
+        popupVC.date = vc.date
+        present(popupNav, animated: true)
     }
     
     private func overviewViewController(for date: Date) -> OverviewViewController? {
